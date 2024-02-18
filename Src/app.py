@@ -13,7 +13,10 @@ st.write('This is a simple web app to predict Alzheimer\'s Disease using MRI ima
 MODEL_PATH = os.path.join('Src', 'alzheimer_efficientnet_model.pth')
 
 try:
-    model = torch.load(MODEL_PATH, map_location=torch.device('cpu'))
+    # Load model
+    model = models.efficientnet_b0(pretrained=False)
+    model._fc = nn.Linear(1280, 4)
+    model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
     model.eval()
     model_loaded = True
 except FileNotFoundError:
