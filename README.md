@@ -50,6 +50,3 @@ Contributions to this project are welcome! Please fork the repository and submit
 
 ## Credits
 - Kaggle for Brain MRI data.
-
-## License
-Include your project's license here. If you have not decided on a license yet, [choose an open source license](https://choosealicense.com/) that suits your project's needs.
