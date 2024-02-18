@@ -8,7 +8,7 @@ from torch import nn, optim
 from efficientnet_pytorch import EfficientNet
 
 st.title('Alzheimer\'s Disease Detection')
-st.write('This is a simple web app to predict Alzheimer\'s Disease using MRI images.')
+st.write('This app predicts Alzheimer\'s Disease using MRI images.')
 
 # Load the model which is in Src/alzheimer_efficientnet_model.pth
 MODEL_PATH = os.path.join('Src', 'alzheimer_efficientnet_model.pth')
