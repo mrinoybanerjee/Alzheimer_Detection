@@ -5,6 +5,7 @@ import torch
 from torchvision import datasets, transforms, models
 from torch.utils.data import DataLoader, random_split
 from torch import nn, optim
+from efficientnet_pytorch import EfficientNet
 
 st.title('Alzheimer\'s Disease Detection')
 st.write('This is a simple web app to predict Alzheimer\'s Disease using MRI images.')
@@ -14,7 +15,7 @@ MODEL_PATH = os.path.join('Src', 'alzheimer_efficientnet_model.pth')
 
 try:
     # Load model
-    model = models.efficientnet_b0(pretrained=False)
+    model = EfficientNet.from_pretrained('efficientnet-b0', num_classes=4)
     model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
     model.eval()
     model_loaded = True
