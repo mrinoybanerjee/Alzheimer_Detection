@@ -1,8 +1,11 @@
 import streamlit as st
 from PIL import Image
-import torch
 from torchvision import transforms
 import os
+import torch
+from torchvision import datasets, transforms, models
+from torch.utils.data import DataLoader, random_split
+from torch import nn, optim
 
 st.title('Alzheimer\'s Disease Detection')
 st.write('This is a simple web app to predict Alzheimer\'s Disease using MRI images.')
