@@ -14,7 +14,7 @@ MODEL_PATH = os.path.join('Src', 'alzheimer_efficientnet_model.pth')
 
 try:
     # Load model
-    model = models.efficientnet_b0(pretrained=False)
+    model = models.efficientnet_b0(pretrained=True)
     model._fc = nn.Linear(1280, 4)
     model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
     model.eval()
