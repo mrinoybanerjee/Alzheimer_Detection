@@ -1,20 +1,22 @@
-# Create streamlit app
 import streamlit as st
-import pandas as pd
-import numpy as np
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torchvision import transforms
 from PIL import Image
+import torch
+from torchvision import transforms
+import os
 
 st.title('Alzheimer\'s Disease Detection')
+st.write('This is a simple web app to predict Alzheimer\'s Disease using MRI images.')
 
-st.write('This is a simple web app to predict Alzheimer\'s Disease using MRI images')
+# Load the model
+MODEL_PATH = 'alzheimer_efficientnet_model.pth'
 
-# Use .pth model saved from training
-model = torch.load('/.streamlit/alzheimer_efficientnet_model.pth')
-model.eval()
+try:
+    model = torch.load(MODEL_PATH, map_location=torch.device('cpu'))
+    model.eval()
+    model_loaded = True
+except FileNotFoundError:
+    st.error(f"Model file not found at {MODEL_PATH}. Please check the path.")
+    model_loaded = False
 
 # Preprocess image
 def preprocess(image):
@@ -30,26 +32,23 @@ def preprocess(image):
 
 # Predict
 def predict(image):
-    image = preprocess(image)
-    output = model(image)
-    _, predicted = torch.max(output, 1)
-    return predicted
+    with torch.no_grad():
+        output = model(image)
+        _, predicted = torch.max(output, 1)
+    return predicted.item()
 
-st.write('Please upload an MRI image')
+st.write('Please upload an MRI image.')
 
 # Load image
-uploaded_file = st.file_uploader("Choose an MRI image...", type="jpg")
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
+uploaded_file = st.file_uploader("Choose an MRI image...", type=["jpg", "jpeg"])
+if uploaded_file is not None and model_loaded:
+    image = Image.open(uploaded_file).convert('RGB')  # Ensure image is RGB
     st.image(image, caption='Uploaded MRI.', use_column_width=True)
-    st.write("")
     st.write("Classifying...")
-    label = predict(preprocess(image))
-    if label == 0:
-        st.write('The model predicts that this MRI image is from a mild Alzheimer\'s Disease patient')
-    elif label == 1:
-        st.write('The model predicts that this MRI image is from a moderate Alzheimer\'s Disease patient')
-    elif label == 2:
-        st.write('The model predicts that this MRI image is from a non-demented patient')
-    elif label == 3:
-        st.write('The model predicts that this MRI image is from a very mild Alzheimer\'s Disease patient')
+    preprocessed_image = preprocess(image)
+    label = predict(preprocessed_image)
+    labels = ['mild Alzheimer\'s Disease', 'moderate Alzheimer\'s Disease', 'non-demented', 'very mild Alzheimer\'s Disease']
+    if label in range(len(labels)):
+        st.write(f'The model predicts that this MRI image is from a {labels[label]} patient.')
+    else:
+        st.error('An error occurred during classification.')
